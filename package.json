@@ -1,0 +1,15 @@
+{
+  "name": "reaktor-summer-2021-heroku-app",
+  "version": "1.0.0",
+  "description": "frontend & backend for Reaktor summer 2021 pre-assignment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tuukka Virtanen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
