@@ -1,8 +1,6 @@
 const express = require( 'express' )
 const app = express()
-//const cors = require( 'cors' )
 const { request } = require('express')
-//app.use( cors() )
 app.use( express.static( 'build' ))
 
 app.use( ( req, res, next ) => {
@@ -15,7 +13,7 @@ GET /v2/products/:category – Return a listing of products in a given category.
 GET /v2/availability/:manufacturer – Return a list of availability info.
 The APIs are running at https://bad-api-assignment.reaktor.com/.
 */
-app.get( '/', ( req, res ) => {
+app.get( '/api/products/gloves', ( req, res ) => {
 	//const products = req.query[ 'products' ]
 	//const availability = req.query[ 'availability' ]
 
