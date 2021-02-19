@@ -1,6 +1,7 @@
 const express = require( 'express' )
 const app = express()
 const { request } = require( 'express' )
+console.log( 'request library in the beginning: ', request )
 app.use( express.static( 'build' ))
 
 app.use( ( req, res, next ) => {
@@ -21,6 +22,7 @@ app.get( '/api/products/gloves', ( req, res ) => {
 	const url = 'https://bad-api-assignment.reaktor.com/v2/products/gloves'
 
 	// make request to Bad API and forward response
+	console.log( 'request library in express route: ', request )
 	request( url ).pipe( res )
 } )
 
