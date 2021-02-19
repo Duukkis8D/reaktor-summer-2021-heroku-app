@@ -1,6 +1,6 @@
 const express = require( 'express' )
+const request = require( 'request' )
 const app = express()
-const { request } = require( 'express' )
 console.log( 'request library in the beginning: ', request )
 app.use( express.static( 'build' ))
 
