@@ -16,6 +16,8 @@ The APIs are running at https://bad-api-assignment.reaktor.com/.
 app.get( '/', ( req, res ) => {
 	const category = req.query[ 'category' ]
 	const manufacturer = req.query[ 'manufacturer' ]
+	console.log( 'category query parameter: ', category )
+	console.log( 'manufacturer query parameter: ', manufacturer )
 
 	// Reaktor Bad API URL
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
