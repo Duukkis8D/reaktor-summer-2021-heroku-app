@@ -1,7 +1,6 @@
 const express = require( 'express' )
 const request = require( 'request' )
 const app = express()
-console.log( 'request library in the beginning: ', request )
 app.use( express.static( 'build' ))
 
 app.use( ( req, res, next ) => {
@@ -10,20 +9,25 @@ app.use( ( req, res, next ) => {
 } )
 
 /*
-GET /v2/products/:category – Return a listing of products in a given category.
+GET /v2/products/:category – Return a listing of products in a given category: gloves, facemasks or beanies.
 GET /v2/availability/:manufacturer – Return a list of availability info.
 The APIs are running at https://bad-api-assignment.reaktor.com/.
 */
-app.get( '/api/products/gloves', ( req, res ) => {
-	//const products = req.query[ 'products' ]
-	//const availability = req.query[ 'availability' ]
+app.get( '/', ( req, res ) => {
+	const category = req.query[ 'category' ]
+	const manufacturer = req.query[ 'manufacturer' ]
 
-	// craft Reaktor Bad API URL, now just hardcoded
-	const url = 'https://bad-api-assignment.reaktor.com/v2/products/gloves'
+	// Reaktor Bad API URL
+	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
-	// make request to Bad API and forward response
-	console.log( 'request library in express route: ', request )
-	request( url ).pipe( res )
+	// craft full URL, make request to Bad API and forward response
+	if ( category !== '' ) {
+		request( `${baseUrl}/products/${category}` ).pipe( res )
+	}
+	else if ( manufacturer !== '' ) {
+		request( `${baseUrl}/availability/${manufacturer}` ).pipe( res ) 
+	}
+	else {}
 } )
 
 const PORT = process.env.PORT || 3001
