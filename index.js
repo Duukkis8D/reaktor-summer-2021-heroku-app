@@ -13,7 +13,7 @@ GET /v2/products/:category – Return a listing of products in a given category:
 GET /v2/availability/:manufacturer – Return a list of availability info.
 The APIs are running at https://bad-api-assignment.reaktor.com/.
 */
-app.get( '/', ( req, res ) => {
+app.get( '/api', ( req, res ) => {
 	const category = req.query.category
 	const manufacturer = req.query.manufacturer
 	console.log( 'category query parameter: ', category )
