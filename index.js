@@ -3,16 +3,16 @@ const request = require( 'request' )
 const app = express()
 app.use( express.static( 'build' ))
 
+/* Sets the needed CORS configuration to response header that is sent to the user's browser. */
 app.use( ( req, res, next ) => {
 	res.header( 'Access-Control-Allow-Origin', '*' )
 	next()
 } )
 
-/*
+/* Forwards the frontend request to Reaktor Bad API server and the response back to frontend.
 GET /v2/products/:category – Return a listing of products in a given category: gloves, facemasks or beanies.
 GET /v2/availability/:manufacturer – Return a list of availability info.
-The APIs are running at https://bad-api-assignment.reaktor.com/.
-*/
+The APIs are running at https://bad-api-assignment.reaktor.com/. */
 app.get( '/api', ( req, res ) => {
 	const category = req.query.category
 	const manufacturer = req.query.manufacturer
