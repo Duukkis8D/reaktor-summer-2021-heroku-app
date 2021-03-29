@@ -27,7 +27,8 @@ app.get( '/api', ( req, res ) => {
 		request( `${baseUrl}/products/${category}` ).pipe( res )
 	}
 	else if ( manufacturer !== '' ) {
-		request( `${baseUrl}/availability/${manufacturer}` ).pipe( res ) 
+		console.log( 'manufacturer ', manufacturer, ' response: ', res )
+		request( `${baseUrl}/availability/${manufacturer}` ).pipe( res )
 	}
 	else {}
 } )
