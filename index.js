@@ -23,12 +23,14 @@ app.get( '/api', ( req, res ) => {
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
 	// craft full URL, make request to Bad API and forward response
-	if ( category !== '' ) {
+	if ( category !== undefined ) {
 		request( `${baseUrl}/products/${category}` ).pipe( res )
 	}
-	else if ( manufacturer !== '' ) {
-		console.log( 'manufacturer ', manufacturer, ' response: ', res )
-		request( `${baseUrl}/availability/${manufacturer}` ).pipe( res )
+	else if ( manufacturer !== undefined ) {
+		request( `${baseUrl}/availability/${manufacturer}`, ( error, response ) => {
+			console.error( 'error:', error )
+			console.log( 'statusCode:', response && response.statusCode )
+		} ).pipe( res )
 	}
 	else {}
 } )
