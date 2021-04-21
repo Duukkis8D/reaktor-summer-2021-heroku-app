@@ -24,12 +24,15 @@ app.get( '/api', ( req, res ) => {
 
 	// craft full URL, make request to Bad API and forward response
 	if ( category !== undefined ) {
-		request( `${baseUrl}/products/${category}` ).pipe( res )
+		request( `${baseUrl}/products/${category}`, ( error, response ) => {
+			console.error( 'category error:', error )
+			console.log( 'category response & statusCode:', response && response.statusCode )
+		} ).pipe( res )
 	}
 	else if ( manufacturer !== undefined ) {
 		request( `${baseUrl}/availability/${manufacturer}`, ( error, response ) => {
-			console.error( 'error:', error )
-			console.log( 'statusCode:', response && response.statusCode )
+			console.error( 'availability error:', error )
+			console.log( 'availability response & statusCode:', response && response.statusCode )
 		} ).pipe( res )
 	}
 	else {}
