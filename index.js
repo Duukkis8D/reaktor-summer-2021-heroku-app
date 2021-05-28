@@ -22,6 +22,23 @@ app.get( '/api', ( req, res ) => {
 	// Reaktor Bad API URL
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
+	// axios response interceptor. Request is sent again if the array of server response is empty.
+	axios.interceptors.response.use( response => {
+		if( response.data.length <= 2 ) {
+			console.log( 'invalid response detected from url:', response.config.url )
+
+			return axios( {
+				method: 'get',
+				url: response.config.url,
+				responseType: 'stream'
+			} )
+		}
+
+		return response
+	}, error => {
+		return Promise.reject(error)	
+	} )
+
 	// craft full URL, make request to Bad API and forward response
 	if ( category !== undefined ) {
 		axios( {
