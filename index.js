@@ -1,5 +1,5 @@
 const express = require( 'express' )
-const request = require( 'request' )
+const axios = require( 'axios' )
 const app = express()
 app.use( express.static( 'build' ))
 
@@ -24,16 +24,26 @@ app.get( '/api', ( req, res ) => {
 
 	// craft full URL, make request to Bad API and forward response
 	if ( category !== undefined ) {
-		request( `${baseUrl}/products/${category}`, ( error, response ) => {
+		axios( {
+			method: 'get',
+			url: `${baseUrl}/products/${category}`,
+			responseType: 'stream'
+		} ).then( ( response, error ) => {
 			console.error( 'category error:', error )
 			console.log( 'category response & statusCode:', response && response.statusCode )
-		} ).pipe( res )
+			response.data.pipe( res )
+		} )
 	}
 	else if ( manufacturer !== undefined ) {
-		request( `${baseUrl}/availability/${manufacturer}`, ( error, response ) => {
+		axios( {
+			method: 'get',
+			url: `${baseUrl}/availability/${manufacturer}`,
+			responseType: 'stream'
+		} ).then( ( response, error ) => {
 			console.error( 'availability error:', error )
 			console.log( 'availability response & statusCode:', response && response.statusCode )
-		} ).pipe( res )
+			response.data.pipe( res )
+		} )
 	}
 	else {}
 } )
