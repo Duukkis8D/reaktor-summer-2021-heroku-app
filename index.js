@@ -22,8 +22,13 @@ app.get( '/api', ( req, res ) => {
 	// Reaktor Bad API URL
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
-	// axios response interceptor. Request is sent again if the array of server response is empty.
+	/* axios response interceptor. Request is sent again if the array of server response is empty. */
 	axios.interceptors.response.use( response => {
+		console.log(
+			'response interceptor, response.config.url:', response.config.url,
+			'response.data:', response.data
+		)
+
 		if( response.data.length <= 2 ) {
 			console.log( 'invalid response detected from url:', response.config.url )
 
@@ -45,10 +50,11 @@ app.get( '/api', ( req, res ) => {
 			method: 'get',
 			url: `${baseUrl}/products/${category}`,
 			responseType: 'stream'
-		} ).then( ( response, error ) => {
-			console.error( 'category error:', error )
-			console.log( 'category response & statusCode:', response && response.statusCode )
+		} ).then( response => {
+			console.log( 'category response:', res )
 			response.data.pipe( res )
+		} ).catch( error => {
+			console.error( 'category error:', error )
 		} )
 	}
 	else if ( manufacturer !== undefined ) {
@@ -56,13 +62,16 @@ app.get( '/api', ( req, res ) => {
 			method: 'get',
 			url: `${baseUrl}/availability/${manufacturer}`,
 			responseType: 'stream'
-		} ).then( ( response, error ) => {
-			console.error( 'availability error:', error )
-			console.log( 'availability response & statusCode:', response && response.statusCode )
+		} ).then( response => {
+			console.log( 'availability response:', res )
 			response.data.pipe( res )
+		} ).catch( error => {
+			console.error( 'availability error:', error )
 		} )
 	}
-	else {}
+	else {
+		console.log( 'unidentified query parameter' )
+	}
 } )
 
 const PORT = process.env.PORT || 3001
