@@ -26,17 +26,22 @@ app.get( '/api', ( req, res ) => {
 	axios.interceptors.response.use( response => {
 		console.log(
 			'response interceptor, response.config.url:', response.config.url,
-			'response.data:', response.data
+			"response.headers['content-type']", response.headers['content-type']
 		)
 
-		if( response.data.length <= 2 ) {
-			console.log( 'invalid response detected from url:', response.config.url )
-
-			return axios( {
-				method: 'get',
-				url: response.config.url,
-				responseType: 'stream'
-			} )
+		if( response.config.url.includes( 'availability' ) ) {
+			if( response.data.response.length <= 2 ) {
+				console.log( 
+					'invalid response detected from url:', response.config.url,
+					'response.data.response.length:', response.data.response.length 
+				)
+	
+				return axios( {
+					method: 'get',
+					url: response.config.url
+					//responseType: 'stream' //default: responseType: 'json'
+				} )
+			}
 		}
 
 		return response
@@ -48,11 +53,12 @@ app.get( '/api', ( req, res ) => {
 	if ( category !== undefined ) {
 		axios( {
 			method: 'get',
-			url: `${baseUrl}/products/${category}`,
-			responseType: 'stream'
+			url: `${baseUrl}/products/${category}`
+			//responseType: 'stream' //default: responseType: 'json'
 		} ).then( response => {
-			console.log( 'category response:', res )
-			response.data.pipe( res )
+			console.log( 'category response.data[0]:', response.data[0] )
+			//response.data.pipe( res )
+			res.send( response.data )
 		} ).catch( error => {
 			console.error( 'category error:', error )
 		} )
@@ -60,11 +66,12 @@ app.get( '/api', ( req, res ) => {
 	else if ( manufacturer !== undefined ) {
 		axios( {
 			method: 'get',
-			url: `${baseUrl}/availability/${manufacturer}`,
-			responseType: 'stream'
+			url: `${baseUrl}/availability/${manufacturer}`
+			//responseType: 'stream' //default: responseType: 'json'
 		} ).then( response => {
-			console.log( 'availability response:', res )
-			response.data.pipe( res )
+			console.log( 'availability response.data.response[0]:', response.data.response[0] )
+			//response.data.pipe( res )
+			res.send( response.data.response )
 		} ).catch( error => {
 			console.error( 'availability error:', error )
 		} )
