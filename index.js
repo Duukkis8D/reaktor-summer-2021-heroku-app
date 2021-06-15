@@ -16,68 +16,71 @@ The APIs are running at https://bad-api-assignment.reaktor.com/. */
 app.get( '/api', ( req, res ) => {
 	const category = req.query.category
 	const manufacturer = req.query.manufacturer
-	console.log( 'category query parameter: ', category )
-	console.log( 'manufacturer query parameter: ', manufacturer )
 
 	// Reaktor Bad API URL
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
-	/* axios response interceptor. Request is sent again if the array of server response is empty. */
+	// axios response interceptor. Request is sent again if the array of server response is empty.
 	axios.interceptors.response.use( response => {
 		console.log(
-			'response interceptor, response.config.url:', response.config.url,
-			"response.headers['content-type']", response.headers['content-type']
+			'response.config.url in server response:', response.config.url,
+			"response.headers['content-type'] in server response:", response.headers['content-type']
 		)
 
 		if( response.config.url.includes( 'availability' ) ) {
 			if( response.data.response.length <= 2 ) {
-				console.log( 
-					'invalid response detected from url:', response.config.url,
-					'response.data.response.length:', response.data.response.length 
+				console.error( 
+					'invalid server response detected with url:', response.config.url,
+					'response.data.response.length:', response.data.response.length,
+					'requesting data again...' 
 				)
 	
-				return axios( {
-					method: 'get',
-					url: response.config.url
-					//responseType: 'stream' //default: responseType: 'json'
-				} )
+				return axios.get( response.config.url )
 			}
 		}
 
 		return response
 	}, error => {
-		return Promise.reject(error)	
+		return Promise.reject( 'error occurred during API request:', error )
 	} )
 
 	// craft full URL, make request to Bad API and forward response
 	if ( category !== undefined ) {
-		axios( {
-			method: 'get',
-			url: `${baseUrl}/products/${category}`
-			//responseType: 'stream' //default: responseType: 'json'
-		} ).then( response => {
-			console.log( 'category response.data[0]:', response.data[0] )
-			//response.data.pipe( res )
-			res.send( response.data )
-		} ).catch( error => {
-			console.error( 'category error:', error )
-		} )
+		console.log( 
+			`requesting product data (name, color, price etc) with the following product 
+			category query parameter:`, category 
+		)
+
+		axios
+			.get( `${baseUrl}/products/${category}` )
+			.then( response => {
+				res.send( response.data )
+			} ).catch( error => {
+				console.error( 
+					'error occurred while handling product data (name, color, price etc):', 
+					error 
+				)
+			} )
 	}
 	else if ( manufacturer !== undefined ) {
-		axios( {
-			method: 'get',
-			url: `${baseUrl}/availability/${manufacturer}`
-			//responseType: 'stream' //default: responseType: 'json'
-		} ).then( response => {
-			console.log( 'availability response.data.response[0]:', response.data.response[0] )
-			//response.data.pipe( res )
-			res.send( response.data.response )
-		} ).catch( error => {
-			console.error( 'availability error:', error )
-		} )
+		console.log( 
+			`requesting product availability data with the following product manufacturer 
+			query parameter:`, manufacturer 
+		)
+
+		axios
+			.get( `${baseUrl}/availability/${manufacturer}` )
+			.then( response => {
+				res.send( response.data.response )
+			} ).catch( error => {
+				console.error( 
+					'error occurred while handling product availability data:', 
+					error 
+				)
+			} )
 	}
 	else {
-		console.log( 'unidentified query parameter' )
+		console.error( 'unidentified query parameter (neither product category nor manufacturer)' )
 	}
 } )
 
