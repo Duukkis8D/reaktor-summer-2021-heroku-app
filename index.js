@@ -35,17 +35,15 @@ const createProductAvailabilityPromise = ( baseUrl, productManufacturer, res ) =
 				'serverResponse.status in server response:', serverResponse.status
 			)
 
-			if( productAvailabilityData.length > 2 ) {
-				res.send( productAvailabilityData )
-			} else if( productAvailabilityData.length <= 2 ) {
+			if( productAvailabilityData.length <= 2 ) {
 				console.error( 
 					'invalid server response detected with url:', serverResponse.config.url, '\n',
 					'productAvailabilityData.length:', productAvailabilityData.length, '\n',
 					'requesting data again...'
 				)
-
-				createProductAvailabilityPromise( baseUrl, productManufacturer, res )
 			}
+
+			res.send( productAvailabilityData )
 		} ).catch( error => {
 			console.error( 'error occurred while handling product availability data:', error )
 		} )
