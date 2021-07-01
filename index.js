@@ -1,6 +1,7 @@
 const express = require( 'express' )
 const app = express()
 app.use( express.static( 'build' ))
+
 const corsMiddleware = require( './corsMiddleware' )
 corsMiddleware.enableCors( app )
 
@@ -9,7 +10,7 @@ const axiosInstance = axios.create()
 const logger = require( './logger' ) // axios response interceptor for logging responses.
 logger.axiosResponseInterceptor( axiosInstance )
 
-const createProductDataPromise = ( baseUrl, productCategory, res ) => {
+const sendProductDataToFrontend = ( baseUrl, productCategory, res ) => {
 	axiosInstance
 		.get( `${baseUrl}/products/${productCategory}` )
 		.then( response => {
@@ -19,7 +20,7 @@ const createProductDataPromise = ( baseUrl, productCategory, res ) => {
 		} )
 }
 
-const createProductAvailabilityPromise = ( baseUrl, productManufacturer, res ) => {
+const sendProductAvailabilityDataToFrontend = ( baseUrl, productManufacturer, res ) => {
 	axiosInstance
 		.get( `${baseUrl}/availability/${productManufacturer}` )
 		.then( serverResponse => {
@@ -35,17 +36,17 @@ GET /v2/products/:category – Return a listing of products in a given category:
 GET /v2/availability/:manufacturer – Return a list of availability info.
 The APIs are running at https://bad-api-assignment.reaktor.com/. */
 app.get( '/api', ( req, res ) => {
-	const category = req.query.category
-	const manufacturer = req.query.manufacturer
+	const productCategory = req.query.category
+	const productManufacturer = req.query.manufacturer
 
 	// Reaktor Bad API URL
 	const baseUrl = 'https://bad-api-assignment.reaktor.com/v2'
 
 	// craft full URL, make request to Bad API and forward response
-	if ( category !== undefined ) {
-		createProductDataPromise( baseUrl, category, res )
-	} else if ( manufacturer !== undefined ) {
-		createProductAvailabilityPromise( baseUrl, manufacturer, res )
+	if ( productCategory !== undefined ) {
+		sendProductDataToFrontend( baseUrl, productCategory, res )
+	} else if ( productManufacturer !== undefined ) {
+		sendProductAvailabilityDataToFrontend( baseUrl, productManufacturer, res )
 	} else {
 		console.error( 'unidentified query parameter (neither product category nor manufacturer)' )
 	}
